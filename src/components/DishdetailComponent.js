@@ -19,7 +19,7 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
             </div>
         )
     }
-    function RenderComments({comments}){
+    function RenderComments({comments, addComment, dishId}){
         if (comments!=null){
             return(
                 <div className="col-12 col-md-5 m-1">
@@ -34,7 +34,7 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
                             );
                         })}
                     </div>
-                    <CommentForm />
+                    <CommentForm dishId={dishId} addComment={addComment} />
                 </div>     
             )
         } else {
@@ -64,8 +64,9 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
               isModalOpen: !this.state.isModalOpen
             });
         }
-        handleSubmit() {
+        handleSubmit(values) {
             this.toggleModal();
+            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
         }
         render() {
             return(
@@ -89,15 +90,15 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
                         </Row>
                         <Row className="form-group">
                             <Col>
-                                <Label htmlFor="yourname">Your name</Label>
-                                <Control.text model=".yourname" id="yourname"
+                                <Label htmlFor="author">Your name</Label>
+                                <Control.text model=".author" id="author"
                                     rows="6" className="form-control"
                                     validators={{
                                         required, minLength: minLength(3), maxLength: maxLength(15)
                                     }} />
                                 <Errors
                                     className="text-danger"
-                                    model=".yourname"
+                                    model=".author"
                                     show="touched"
                                     messages={{
                                         required: 'Required',
@@ -141,7 +142,9 @@ import { Control, LocalForm, Errors } from 'react-redux-form';
                 </div>
                     <div className="row">
                         <RenderDish dish = {props.dish}/>
-                        <RenderComments comments={props.comments}/>
+                        <RenderComments comments={props.comments} 
+                            addComment={props.addComment}
+                            dishId={props.dish.id}/>
                     </div>
                 </div>
             );
